@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import ProductsPage from "@/features/products/ProductsPage";
+import LoadingFallback from "@/components/common/LoadingFallback";
 
 export const metadata = {
   title: "Sản phẩm - PC Adviser",
@@ -6,5 +8,9 @@ export const metadata = {
 };
 
 export default function ProductsPageWrapper() {
-  return <ProductsPage />;
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ProductsPage />
+    </Suspense>
+  );
 }

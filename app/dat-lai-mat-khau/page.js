@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import ResetPasswordPage from "@/features/auth/ResetPasswordPage";
+import LoadingFallback from "@/components/common/LoadingFallback";
 
 export const metadata = {
   title: "Đặt lại mật khẩu - PC Adviser",
@@ -6,6 +8,9 @@ export const metadata = {
 };
 
 export default function ResetPasswordPageWrapper() {
-  return <ResetPasswordPage />;
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ResetPasswordPage />
+    </Suspense>
+  );
 }
-
