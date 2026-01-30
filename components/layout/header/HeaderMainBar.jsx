@@ -6,14 +6,12 @@ import {
   Badge,
   Avatar,
   Dropdown,
-  Tooltip,
 } from "antd";
 import {
   ShoppingCartOutlined,
   UserOutlined,
   MenuOutlined,
   SearchOutlined,
-  MessageOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import SearchPopup from "./SearchPopup";
@@ -26,7 +24,6 @@ export default function HeaderMainBar({
   searchValue,
   setSearchValue,
   handleSearch,
-  handleChatbotClick,
   handleCartClick,
   userMenuItems,
   isAuthenticated,
@@ -154,15 +151,6 @@ export default function HeaderMainBar({
             onClick={onSearchClick}
             className="hide-desktop"
           />
-
-          {/* Chatbot Button */}
-          <Tooltip title="Chat với AI tư vấn">
-            <Button
-              type="text"
-              icon={<MessageOutlined style={{ fontSize: 20 }} />}
-              onClick={handleChatbotClick}
-            />
-          </Tooltip>
 
           {/* Cart */}
           <Badge count={itemCount} offset={[-2, 2]}>

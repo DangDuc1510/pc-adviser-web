@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { useBuildPC } from "@/hooks/useBuildPC";
 import ComponentSelector from "@/components/build-pc/ComponentSelector";
 import ProductSelectModal from "@/components/build-pc/ProductSelectModal";
+import BuildSuggestions from "@/components/build-pc/BuildSuggestions";
 import { formatPrice } from "@/utils/format";
 import { useCart } from "@/hooks/useCart";
 
@@ -103,6 +104,14 @@ const BuildPCPage = ({ configId }) => {
       setEditingComponentType(null);
     },
     [selectedComponentType, addComponent]
+  );
+
+  // Handle product selection from suggestions
+  const handleSuggestionSelect = useCallback(
+    (componentTypeKey, product) => {
+      addComponent(componentTypeKey, product, 1);
+    },
+    [addComponent]
   );
 
   // Handle remove component
@@ -231,7 +240,7 @@ const BuildPCPage = ({ configId }) => {
 
       {/* Components List */}
       <div
-      // className="grid grid-cols-1 md:grid-cols-2"
+      className="grid grid-cols-1 md:grid-cols-2 gap-4"
       >
         <Card
           style={{
@@ -268,20 +277,34 @@ const BuildPCPage = ({ configId }) => {
             ))
           )}
         </Card>
-        {/* <div>
-          //// chỗ này sẽ gọi api gợi ý để người dùng add nhanh các linh kiện
-          phù hợp //// api gợi ý sẽ trả về các linh kiện phù hợp với cấu hình
-          hiện tại //// cấu hình hiện tại là các linh kiện đã chọn
-        </div> */}
+        <div
+          style={{
+            position: "sticky",
+            top: 80,
+            alignSelf: "flex-start",
+          }}
+        >
+          <Card
+            style={{
+              marginBottom: 24,
+              borderRadius: 12,
+            }}
+          >
+            <BuildSuggestions
+              currentConfig={currentConfig}
+              availableComponentTypes={Object.values(COMPONENT_TYPES)}
+              onSelectProduct={handleSuggestionSelect}
+              limitPerComponent={5}
+            />
+          </Card>
+        </div>
       </div>
 
       {/* Summary Card */}
       <Card
         style={{
           borderRadius: 12,
-          position: "sticky",
-          bottom: 0,
-          zIndex: 10,
+          shadow: "0 0 10px 0 rgba(0, 0, 0, 0.1)",
         }}
       >
         <div

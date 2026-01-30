@@ -122,12 +122,17 @@ const MyVouchersPage = () => {
   }
 
   return (
-    <div style={{ padding: "24px", maxWidth: 1200, margin: "0 auto" }}>
+    <div style={{ 
+      padding: "24px", 
+      maxWidth: 1200, 
+      margin: "0 auto",
+      minHeight: "calc(100vh - 200px)",
+    }}>
       <div style={{ marginBottom: 32 }}>
-        <Title level={2} style={{ margin: 0 }}>
-          <GiftOutlined /> Khuyến mãi của tôi
+        <Title level={2} style={{ margin: 0, display: "flex", alignItems: "center", gap: 12 }}>
+          <GiftOutlined style={{ color: "black" }} /> Khuyến mãi của tôi
         </Title>
-        <Paragraph style={{ marginTop: 8, color: "#666" }}>
+        <Paragraph style={{ marginTop: 8, color: "#666", fontSize: 15 }}>
           Danh sách mã khuyến mãi bạn có thể sử dụng
         </Paragraph>
       </div>
@@ -140,13 +145,7 @@ const MyVouchersPage = () => {
         <>
           {/* Expiring Soon Section */}
           {expiringSoon.length > 0 && (
-            <div style={{ marginBottom: 32 }}>
-              <Space style={{ marginBottom: 16 }}>
-                <FireOutlined style={{ color: "#ff4d4f" }} />
-                <Title level={4} style={{ margin: 0 }}>
-                  Sắp hết hạn
-                </Title>
-              </Space>
+            <div style={{ marginBottom: 40 }}>
               <Row gutter={[16, 16]}>
                 {expiringSoon.map((voucher) => (
                   <Col xs={24} sm={12} lg={8} key={voucher._id}>
@@ -163,46 +162,53 @@ const MyVouchersPage = () => {
           )}
 
           {/* Valid Vouchers Section */}
-          {vouchers.length > 0 && (
-            <div style={{ marginBottom: 32 }}>
-              <Space style={{ marginBottom: 16 }}>
-                <CheckCircleOutlined style={{ color: "#52c41a" }} />
-                <Title level={4} style={{ margin: 0 }}>
-                  Có thể sử dụng ({validVouchers.length})
+          {validVouchers.filter((v) => !isExpiringSoon(v.endDate)).length > 0 && (
+            <div style={{ marginBottom: 40 }}>
+              <div style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                gap: 8, 
+                marginBottom: 20,
+                paddingBottom: 12,
+                borderBottom: "2px solid #52c41a",
+              }}>
+                <CheckCircleOutlined style={{ color: "#52c41a", fontSize: 20 }} />
+                <Title level={4} style={{ margin: 0, color: "#52c41a" }}>
+                  Có thể sử dụng ({validVouchers.filter((v) => !isExpiringSoon(v.endDate)).length})
                 </Title>
-              </Space>
-              {validVouchers.length > 0 ? (
-                <Row gutter={[16, 16]}>
-                  {validVouchers
-                    .filter((v) => !isExpiringSoon(v.endDate))
-                    .map((voucher) => (
-                      <Col xs={24} sm={12} lg={8} key={voucher._id}>
-                        <VoucherCard
-                          voucher={voucher}
-                          onCopy={handleCopyCode}
-                          copiedCode={copiedCode}
-                        />
-                      </Col>
-                    ))}
-                </Row>
-              ) : (
-                <Empty
-                  description="Bạn chưa có mã khuyến mãi nào có thể sử dụng"
-                  image={Empty.PRESENTED_IMAGE_SIMPLE}
-                />
-              )}
+              </div>
+              <Row gutter={[16, 16]}>
+                {validVouchers
+                  .filter((v) => !isExpiringSoon(v.endDate))
+                  .map((voucher) => (
+                    <Col xs={24} sm={12} lg={8} key={voucher._id}>
+                      <VoucherCard
+                        voucher={voucher}
+                        onCopy={handleCopyCode}
+                        copiedCode={copiedCode}
+                      />
+                    </Col>
+                  ))}
+              </Row>
             </div>
           )}
 
           {/* Expired Vouchers Section */}
           {expiredVouchers.length > 0 && (
-            <div>
-              <Space style={{ marginBottom: 16 }}>
-                <ClockCircleOutlined style={{ color: "#999" }} />
+            <div style={{ marginTop: 40 }}>
+              <div style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                gap: 8, 
+                marginBottom: 20,
+                paddingBottom: 12,
+                borderBottom: "2px solid #d9d9d9",
+              }}>
+                <ClockCircleOutlined style={{ color: "#999", fontSize: 20 }} />
                 <Title level={4} style={{ margin: 0, color: "#999" }}>
                   Đã hết hạn ({expiredVouchers.length})
                 </Title>
-              </Space>
+              </div>
               <Row gutter={[16, 16]}>
                 {expiredVouchers.map((voucher) => (
                   <Col xs={24} sm={12} lg={8} key={voucher._id}>
@@ -277,38 +283,63 @@ const VoucherCard = ({
         borderRadius: 8,
         opacity: isExpired ? 0.6 : 1,
         position: "relative",
+        overflow: "visible",
       }}
       bodyStyle={{ padding: 20 }}
     >
-      {isExpiringSoon && <Badge.Ribbon text="Sắp hết hạn" color="red" />}
+      {isExpiringSoon && (
+        <Badge.Ribbon 
+          text="Sắp hết hạn" 
+          color="red" 
+          style={{ top: -1, right: -1 }}
+        />
+      )}
 
       <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
         {/* Header */}
-        <div style={{ marginBottom: 16 }}>
-          <Space
-            style={{
-              width: "100%",
-              justifyContent: "space-between",
-              marginBottom: 8,
-            }}
-          >
+        <div style={{ 
+          marginBottom: 16,
+          paddingTop: isExpiringSoon ? 8 : 0,
+        }}>
+          {/* Discount and Tags Row */}
+          <div style={{ 
+            display: "flex", 
+            alignItems: "flex-start", 
+            justifyContent: "space-between",
+            marginBottom: 8,
+            gap: 8,
+            flexWrap: "wrap",
+            position: "relative",
+          }}>
             <Text strong style={{ fontSize: 18, color: getDiscountColor() }}>
               {formatDiscount(voucher)}
             </Text>
             {voucher.type === "user-specific" && (
-              <Tag color="purple" icon={<StarOutlined />}>
+              <Tag 
+                color="purple" 
+                icon={<StarOutlined />}
+                style={{ 
+                  margin: 0,
+                  marginTop: isExpiringSoon ? 24 : 0,
+                  zIndex: 1,
+                }}
+              >
                 Dành riêng cho bạn
               </Tag>
             )}
-          </Space>
+          </div>
+          
+          {/* Title */}
           <Text
             strong
             style={{ fontSize: 16, display: "block", marginBottom: 4 }}
           >
             {voucher.name}
           </Text>
+          
+          {/* Description */}
           {voucher.description && (
-            <Text type="secondary" style={{ fontSize: 12 }}>
+            <Text type="secondary" style={{ fontSize: 12, display: "block" }}>
               {voucher.description}
             </Text>
           )}
@@ -317,45 +348,62 @@ const VoucherCard = ({
         <Divider style={{ margin: "12px 0" }} />
 
         {/* Details */}
-        <div style={{ flex: 1 }}>
-          <Space direction="vertical" size="small" style={{ width: "100%" }}>
+        <div style={{ flex: 1, marginBottom: 16 }}>
+          <Space direction="vertical" size={8} style={{ width: "100%" }}>
             {voucher.minPurchaseAmount > 0 && (
-              <Text style={{ fontSize: 12 }}>
-                Đơn hàng tối thiểu:{" "}
-                <strong>{formatPrice(voucher.minPurchaseAmount)}</strong>
-              </Text>
+              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <Text style={{ fontSize: 13, color: "#666" }}>
+                  Đơn hàng tối thiểu:{" "}
+                  <strong style={{ color: "#000" }}>{formatPrice(voucher.minPurchaseAmount)}</strong>
+                </Text>
+              </div>
             )}
             {voucher.maxDiscountAmount &&
               voucher.discountType === "percentage" && (
-                <Text style={{ fontSize: 12 }}>
-                  Giảm tối đa:{" "}
-                  <strong>{formatPrice(voucher.maxDiscountAmount)}</strong>
-                </Text>
+                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <Text style={{ fontSize: 13, color: "#666" }}>
+                    Giảm tối đa:{" "}
+                    <strong style={{ color: "#000" }}>{formatPrice(voucher.maxDiscountAmount)}</strong>
+                  </Text>
+                </div>
               )}
             {voucher.usageLimitPerUser && (
-              <Text style={{ fontSize: 12 }}>
-                Sử dụng tối đa: <strong>{voucher.usageLimitPerUser} lần</strong>
-              </Text>
+              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <Text style={{ fontSize: 13, color: "#666" }}>
+                  Sử dụng tối đa: <strong style={{ color: "#000" }}>{voucher.usageLimitPerUser} lần</strong>
+                </Text>
+              </div>
             )}
             {voucher.usageLimit && (
-              <Text style={{ fontSize: 12, color: "#999" }}>
-                Đã dùng: {voucher.usageCount || 0}/{voucher.usageLimit}
-              </Text>
+              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <Text style={{ fontSize: 13, color: "#999" }}>
+                  Đã dùng: {voucher.usageCount || 0}/{voucher.usageLimit}
+                </Text>
+              </div>
             )}
           </Space>
         </div>
 
         {/* Footer */}
-        <div style={{ marginTop: 16 }}>
-          <Space direction="vertical" size="small" style={{ width: "100%" }}>
-            <Text type="secondary" style={{ fontSize: 11 }}>
-              HSD: {new Date(voucher.endDate).toLocaleDateString("vi-VN")}
-            </Text>
-            {!isExpired && getDaysUntilExpiry() > 0 && (
-              <Text type="secondary" style={{ fontSize: 11 }}>
-                Còn lại: {getDaysUntilExpiry()} ngày
+        <div style={{ marginTop: "auto", paddingTop: 16 }}>
+          <Space direction="vertical" size={8} style={{ width: "100%" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <Text type="secondary" style={{ fontSize: 12 }}>
+                HSD: {new Date(voucher.endDate).toLocaleDateString("vi-VN")}
               </Text>
-            )}
+              {!isExpired && getDaysUntilExpiry() > 0 && (
+                <Text 
+                  type="secondary" 
+                  style={{ 
+                    fontSize: 12,
+                    color: isExpiringSoon ? "#ff4d4f" : "#666",
+                    fontWeight: isExpiringSoon ? 600 : 400,
+                  }}
+                >
+                  Còn lại: {getDaysUntilExpiry()} ngày
+                </Text>
+              )}
+            </div>
 
             {/* Code and Actions */}
             <div
@@ -363,23 +411,36 @@ const VoucherCard = ({
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                padding: "8px 12px",
-                background: "#f5f5f5",
-                borderRadius: 4,
-                marginTop: 8,
+                padding: "10px 14px",
+                background: isExpired ? "#fafafa" : "#f0f7ff",
+                borderRadius: 6,
+                border: isExpired ? "1px solid #e8e8e8" : "1px solid #d4e8ff",
+                marginTop: 4,
               }}
             >
-              <Text code style={{ flex: 1, fontSize: 14, fontWeight: 600 }}>
+              <Text 
+                code 
+                style={{ 
+                  flex: 1, 
+                  fontSize: 15, 
+                  fontWeight: 700,
+                  color: isExpired ? "#999" : "#1890ff",
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                }}
+              >
                 {voucher.code}
               </Text>
-              <Tooltip title="Sao chép mã" color="black">
+              <Tooltip title="Sao chép mã">
                 <Button
                   type="text"
                   icon={<CopyOutlined />}
                   size="small"
                   onClick={() => onCopy(voucher.code)}
                   style={{
-                    color: copiedCode === voucher.code ? "#52c41a" : undefined,
+                    color: copiedCode === voucher.code ? "#52c41a" : (isExpired ? "#999" : "#1890ff"),
+                    minWidth: 32,
                   }}
                 />
               </Tooltip>
@@ -390,7 +451,12 @@ const VoucherCard = ({
                 type="primary"
                 block
                 onClick={() => router.push("/gio-hang")}
-                style={{ marginTop: 8 }}
+                style={{ 
+                  marginTop: 8,
+                  height: 40,
+                  fontSize: 15,
+                  fontWeight: 600,
+                }}
               >
                 Sử dụng ngay
               </Button>

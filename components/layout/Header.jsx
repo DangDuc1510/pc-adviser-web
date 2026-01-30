@@ -56,10 +56,6 @@ const Header = () => {
     router.push("/dang-nhap");
   };
 
-  const handleChatbotClick = () => {
-    router.push("/chat");
-  };
-
   const handleCartClick = () => {
     setCartModalOpen(true);
   };
@@ -176,7 +172,6 @@ const Header = () => {
         searchValue={searchValue}
         setSearchValue={setSearchValue}
         handleSearch={handleSearch}
-        handleChatbotClick={handleChatbotClick}
         handleCartClick={handleCartClick}
         userMenuItems={userMenuItems}
         isAuthenticated={isAuthenticated}

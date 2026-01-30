@@ -120,5 +120,24 @@ export const RecommendationsApi = {
       },
     });
   },
+
+  /**
+   * Get build suggestions for a single missing component type
+   * @param {Object} currentConfig - Current build configuration { componentType: product }
+   * @param {String} categoryId - Category ID to suggest products for
+   * @param {Number} limitPerComponent - Limit of suggestions (max 6)
+   * @returns {Promise}
+   */
+  getBuildSuggestions(currentConfig = {}, categoryId, limitPerComponent = 6) {
+    if (!categoryId || typeof categoryId !== 'string') {
+      return Promise.reject(new Error("categoryId is required and must be a string"));
+    }
+    
+    return api.post(`${APIConfig.recommendations}/build-suggestions`, {
+      currentConfig,
+      categoryId,
+      limitPerComponent: Math.min(6, limitPerComponent),
+    });
+  },
 };
 
